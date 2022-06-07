@@ -36,8 +36,7 @@ const ProjectType = new GraphQLObjectType({
             resolve(parent,args,context,info){
                 return clients.find(client => client.id === parent.clientId);
             }
-         },
-         
+         },  
     }),
 });
 
