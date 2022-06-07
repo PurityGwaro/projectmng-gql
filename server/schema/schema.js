@@ -1,6 +1,12 @@
 const { projects, clients } = require('../sampleData'); 
 //const graphql = require('graphql');
 //anything we need from graphql we are going to destructure it
+
+//bring in the mongoose models
+const Project = require('../models/Project');
+const Client = require('../models/Client');
+//these can be used to query the database
+
 const { 
     GraphQLObjectType,
     GraphQLID,
@@ -34,7 +40,8 @@ const ProjectType = new GraphQLObjectType({
         client: { //child to the Project(parent in this case)
             type: ClientType,
             resolve(parent,args,context,info){
-                return clients.find(client => client.id === parent.clientId);
+                //return clients.find(client => client.id === parent.clientId);
+                return Client.findById(parent.clientId);
             }
          },  
     }),
@@ -52,7 +59,9 @@ const RootQuery = new GraphQLObjectType({
             },
             //what we return is going to be in the resolver
             resolve(parent, args, context, info) {
-                return clients.find(client => client.id === args.id);
+                //return clients.find(client => client.id === args.id);
+                //access db
+                return Client.findById(args.id);
             }
         },
         clients: {//going to fetch all the clients
@@ -60,7 +69,9 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(ClientType),
             //args: {} are not needed coz we're getting all clients
             resolve(parent, args, context, info) {
-               return clients; //returning the array of clients
+               //return clients; //returning the array of clients
+               //access db
+               return Client.find();
             }
         },
         project: {//going to fetch a project by id
@@ -69,13 +80,17 @@ const RootQuery = new GraphQLObjectType({
                 id: { type: GraphQLID },
             },
             resolve(parent, args, context, info) {
-                return projects.find(project => project.id === args.id);
+                //return projects.find(project => project.id === args.id);
+                //access db
+                return Project.findById(args.id);
             }
         },
         projects: {//going to fetch all the projects
             type: new GraphQLList(ProjectType),
             resolve(parent, args, context, info) {
-                return projects;
+                //return projects;
+                //access the database and return all the projects
+                return Project.find();//this gets all the projects
             }
         },
     },
