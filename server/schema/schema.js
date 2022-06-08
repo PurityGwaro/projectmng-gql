@@ -1,4 +1,4 @@
-const { projects, clients } = require('../sampleData'); 
+//const { projects, clients } = require('../sampleData'); //dummy data
 //const graphql = require('graphql');
 //anything we need from graphql we are going to destructure it
 
@@ -13,6 +13,7 @@ const {
     GraphQLString,
     GraphQLSchema,
     GraphQLList,
+    GraphQLNonNull,
  } = require('graphql');
 
  //grqphql object type is used when creating each type of the major categories i.e client type and projects type
@@ -96,7 +97,35 @@ const RootQuery = new GraphQLObjectType({
     },
 });
 
+
+//Mutations
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addClient: {
+            type: ClientType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type: new GraphQLNonNull(GraphQLString) },
+                phone: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parent, args, context, info) {
+                const client = new Client({
+                    name: args.name,
+                    email: args.email,
+                    phone: args.phone,
+                });
+                return client.save();//saves the created client to the database
+
+                //you can also use the create method
+                //Client.create(args);
+            }
+        }
+    },
+});
+
 //to use the query,.. it needs to be exported as a schema
 module.exports = new GraphQLSchema({
     query: RootQuery,
+    mutation: Mutation,
 });
