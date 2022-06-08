@@ -4,6 +4,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 //wraps around the components so that any routes will have access to the Apollo client
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Project from "./pages/Project";
 
 
 //solving the error: cache data may be lost, merging the changes from the server into the cache
@@ -44,6 +45,7 @@ function App() {
           <div className="Container">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/projects/:id" element={<Project />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
