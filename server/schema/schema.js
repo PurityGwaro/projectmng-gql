@@ -14,6 +14,7 @@ const {
     GraphQLSchema,
     GraphQLList,
     GraphQLNonNull,
+    GraphQLEnumType,
  } = require('graphql');
 
  //grqphql object type is used when creating each type of the major categories i.e client type and projects type
@@ -130,6 +131,45 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(parent, args, context, info) {
                 return Client.findByIdAndRemove(args.id);
+            }
+        },
+        //add a project
+        addProject: {
+            type: ProjectType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLString) },
+                status: { 
+                    type: new GraphQLEnumType({
+                        name: 'ProjectStatus',
+                        values: {
+                            'new': { value: 'Not Started' },
+                            'progress': { value: 'In Progress' },
+                            'completed': { value: 'Completed' },
+                        }
+                    }),
+                    defaultValue: 'Not Started',
+                },
+                clientId: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parent, args, context, info) {
+                const project = new Project({
+                    name: args.name,
+                    description: args.description,
+                    status: args.status,
+                    clientId: args.clientId,
+                });
+                return project.save();
+            }
+        },
+        //delete a project
+        deleteProject: {
+            type: ProjectType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parent, args, context, info) {
+                return Project.findByIdAndRemove(args.id);
             }
         },
     },
