@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 //wraps around the components so that any routes will have access to the Apollo client
 import Clients from "./components/Clients";
+import AddClientModal from "./components/AddClientModal";
 
 
 //solving the error: cache data may be lost, merging the changes from the server into the cache
@@ -39,6 +40,7 @@ function App() {
       <ApolloProvider client={client}>
         <Header />
         <div className="Container">
+          <AddClientModal/>
           <Clients />
         </div>
       </ApolloProvider>
