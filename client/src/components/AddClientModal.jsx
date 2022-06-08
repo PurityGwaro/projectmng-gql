@@ -1,6 +1,8 @@
 import { useState } from "react";//we're going to be using a form and each field will be a piece of component state
 import { FaUser } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
+import { ADD_CLIENT } from "../mutations/clientMutations";
+import { GET_CLIENTS } from "../queries/clientQueries";//will be used to update the cache
 
 
 export default function AddClientModal() {
@@ -8,10 +10,36 @@ export default function AddClientModal() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
 
-const onSubmit = (e) =>{
-    e.preventDefault();
-    console.log(name, email, phone);
-}
+    const [addClient] = useMutation(ADD_CLIENT, {
+        //anything we want to pass in as variables goes inside the variables object
+        variables: { name, email, phone },
+        //update the cache after adding a client for it to refresh in the UI
+        update(cache, { data: { addClient } }) {
+            //here addClient gives us what we return from the mutation
+            const { clients } = cache.readQuery({ query: GET_CLIENTS });
+            cache.writeQuery({
+                query: GET_CLIENTS,
+                data: { clients: [...clients, addClient] }//adding using the spread operator
+                //or data: { clients: clients.concat([addClient]) }
+            })//to update the cache
+        }
+    });
+
+    const onSubmit = (e) =>{
+        e.preventDefault();
+        //console.log(name, email, phone);
+        if (name === "" || email === "" || phone === "") {
+            //confirming if the user has filled out all the fields
+            return alert("Please fill out all fields");//if anything is missing
+        }
+
+        addClient(name, email, phone);//to add the client to the database
+
+        //clear the form
+        setName("");
+        setEmail("");
+        setPhone("");
+    }
 
   return (
     <>
