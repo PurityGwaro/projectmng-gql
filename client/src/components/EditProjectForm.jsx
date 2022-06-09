@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { GET_PROJECT } from "../queries/projectQueries";
 import { UPDATE_PROJECT } from "../mutations/projectMutations";
-import Spinner from "./Spinner";
 
 
-export default function EditProjectForm( { project } ) {
+
+export default function EditProjectForm( { project, setShowForm } ) {
 
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description);
@@ -35,6 +35,7 @@ export default function EditProjectForm( { project } ) {
         setName("");
         setDescription("");
         setStatus("");
+        setShowForm(false);
     }
     // if(loading) return <Spinner/>;
 
