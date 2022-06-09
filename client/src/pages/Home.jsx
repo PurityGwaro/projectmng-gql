@@ -6,7 +6,7 @@ import AddProjectModal from "../components/AddProjectModal";
 export default function Home() {
   return (
     <>
-        <div className="gap-3 mb-4">
+        <div className="container gap-3 mb-4">
         <AddClientModal/>
         <AddProjectModal/>
         <Projects/>
